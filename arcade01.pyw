@@ -145,9 +145,22 @@ class scorezone(pygame.sprite.Sprite):
             P1.score += 1
             self.kill()
 
+class gameoverscreen(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.surf = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA, 32)
+        self.colsurf = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        self.colsurf.fill((0,0,0))
+        self.colsurf.set_alpha(200)
+        self.surf.blit(self.colsurf, (0,0))
+        self.text = scoretext.render("Game Over", True, (255,255,255))
+        self.surf.blit(self.text, (WIDTH/2 - self.text.get_width()/2, HEIGHT/2 - self.text.get_height()/2))
+        self.rect = self.surf.get_rect(center = (WIDTH/2, HEIGHT/2))
 P1 = Player()
 GROUND1 = platform()
 GROUND2 = platform()
+
+GOS = gameoverscreen()
 
 platforms = pygame.sprite.Group()
 platforms.add(GROUND1)
@@ -218,8 +231,13 @@ while True:
     for entity in all_sprites:
         displaysurface.blit(entity.surf, entity.rect)
     
-    displaysurface.blit(scoretext.render(str(P1.score), True, (0,0,0)), (WIDTH/2, 10))
-    displaysurface.blit(scoretext.render(str(P1.score), True, (20,20,20)), (WIDTH/2 +2, 12))
-
+    if gamestart:
+        displaysurface.blit(scoretext.render(str(P1.score), True, (0,0,0)), (WIDTH/2, 10))
+        displaysurface.blit(scoretext.render(str(P1.score), True, (20,20,20)), (WIDTH/2 +2, 12))
+    if not gamestart:
+        displaysurface.blit(scoretext.render("Press Space to Start", True, (255,255,255)), (WIDTH/2 - 100, HEIGHT/2 - 50))
+        displaysurface.blit(scoretext.render("Press Space to Start", True, (20,20,20)), (WIDTH/2 - 98, HEIGHT/2 - 48))
+    if gameover:
+        displaysurface.blit(GOS.surf, GOS.rect)
     pygame.display.update()
     #print(tick, longTick, P1.score, P1.pos, P1.vel, P1.acc)
